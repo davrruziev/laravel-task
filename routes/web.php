@@ -14,18 +14,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return redirect('dashboard');
-})->middleware('auth');
+Route::group(['middleware'=>['auth']],function (){
+    Route::get('/',[\App\Http\Controllers\MainController::class,'main'] )->name('main');
+    Route::resource('applications',\App\Http\Controllers\ApplicationController::class);
+});
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
+
+Route::get('/dashboard', [\App\Http\Controllers\MainController::class,'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
 
 require __DIR__.'/auth.php';
