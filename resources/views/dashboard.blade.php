@@ -44,6 +44,13 @@
 
 
                     @elseif(auth()->user()->role->name == 'client')
+                        @if(session()->has('error'))
+                            <div class=" max-w-xs bg-green-500 text-sm text-white rounded-md shadow-lg mb-3 ml-3" role="alert">
+                                <div class="flex p-4">
+                                    {{session()->get('error')}}
+                                </div>
+                            </div>
+                        @endif
                                 <div class='flex items-center justify-center '>
                                     <div class='w-full max-w-lg px-10 py-8 mx-auto bg-white rounded-lg shadow-xl'>
                                         <div class='max-w-md mx-auto space-y-6'>
