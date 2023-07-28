@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendEmailJob;
+use App\Mail\ApplicationCreated;
 use App\Models\Application;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class ApplicationController extends Controller
 {
@@ -17,7 +21,7 @@ class ApplicationController extends Controller
         $request->validate([
            'subject'=>'required|max:255',
             'message'=>'required',
-            'file'=>'file|mimes:jpg,,png,pdf'
+            'file'=>'file|mimes:jpg,png,pdf'
         ]);
         $application=Application::create([
             'user_id'=>auth()->user()->id,
@@ -25,6 +29,8 @@ class ApplicationController extends Controller
            'message'=>$request->message,
            'file_url'=>$path ?? null,
         ]);
+
+        dispatch(new SendEmailJob($application));
 
         return redirect()->back();
     }
